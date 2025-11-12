@@ -20,4 +20,5 @@ test('homepage has title and links to intro page', async ({ page }) => {
   await expect(page).toHaveURL(/.*intro/);
 
   await page.pause()
+
 });
