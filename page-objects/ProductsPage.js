@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test"
-
-export class ProductsPage{
+import { Navegation } from "./Navegation"
+import { Network } from "inspector/promises"
+export class ProductsPage {
 
     constructor(page) {
         //this se refere a classe ProductsPage
@@ -15,38 +16,32 @@ export class ProductsPage{
 
 
     visit = async () => {
-         await this.page.goto("localhost:2221")
+
+        //Acessa a URL configurada no playwright.config.js
+        await this.page.goto("/")
     }
 
-    getBasketCount = async () => {
-    //Convertendo um número
-
-    await this.basketCounter.waitFor()
-
-    //Pega o texto do locator
-    const text = await this.basketCounter.innerText()
-    //Converte o texto para número inteiro
-    return parseInt(text, 10)
-   
-
-    }
-
+  
     addProductToBasket = async (index) => {
-        
+
         //Tem cinco botões de add to basket, então precisamos especificar qual queremos
         //Localiza o primeiro botão de add to basket
+
         const specficAddButtons = this.addButtons.nth(index)
 
         //Espera o botão estar visível e que tenha o texto "Add to Basket"
         await specficAddButtons.waitFor()
         await expect(specficAddButtons).toHaveText("Add to Basket")
 
+        //Instancia a classe Navegation para usar o metodo getBasketCount
+        const navegation = new Navegation(this.page)
+                   
         //Verifica a contagem do carrinho antes de clicar no botão e clica no botão
-        const basketCountBeforeAdding = await this.getBasketCount()
+        const basketCountBeforeAdding = await navegation.getBasketCount()
         await specficAddButtons.click()
 
         //Verifica a contgem do carrinho depois de clicar no botão e verifica se o texto do botão foi alterado
-        const basketCountAfterAdding = await this.getBasketCount()
+        const basketCountAfterAdding = await navegation.getBasketCount()
         await expect(specficAddButtons).toHaveText("Remove from Basket")
 
         //Verifica se a contagem do carrinho está maior
