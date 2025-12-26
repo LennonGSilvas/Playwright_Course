@@ -8,6 +8,8 @@ test.only ("New user full end-to-end test journey", async ({page}) =>{
     const productsPage = new ProductsPage(page)
     // Chama o metodo visit da classe
     await productsPage.visit()
+    
+    //chama o metodo productsPage e insere tres produtos no carrinho
     await productsPage.addProductToBasket(0)
     await productsPage.addProductToBasket(1)
     await productsPage.addProductToBasket(2)
