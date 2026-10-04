@@ -1,46 +1,57 @@
+import { expect } from "@playwright/test";
+import { timeout } from "../playwright.config";
+
 export class CheckoutPage {
+  constructor(page) {
+    this.page = page;
+    this.basketCard = page.locator('[data-qa="basket-card"]');
+    this.basketItemPrice = page.locator('[data-qa="basket-item-price"]');
+    this.basketRemoveButton = page.locator(
+      '[data-qa="basket-card-remove-item"]',
+    );
+    this.continueToCheckoutButton = page.locator(
+      '[data-qa="continue-to-checkout"]',
+    );
+  }
 
-    constructor(page) {
-        this.page = page
-        this.basketCard = page.locator('[data-qa="basket-card"]')
-        this.basketItemPrice = page.locator('[data-qa="basket-item-price"]')
-        this.basketRemoveButton = page.locator('[data-qa="basket-card-remove-item"]')
-    }
+  removeCheapestProduct = async () => {
+    await this.basketCard.first().waitFor();
 
+    //Conta quantos produtos foram adicionados no carrinho
+    const itemsBeforeRemoval = await this.basketCard.count();
 
-    removeCheapestProduct = async () => {
-        await this.basketCard.first().waitFor()
-        await this.basketItemPrice.first().waitFor()
+    await this.basketItemPrice.first().waitFor();
 
+    //Acha todos os preços dos produtos
+    const allPriceTexts = await this.basketItemPrice.allInnerTexts();
 
-        //Pega todos os textos de preços do card de produtos
-        const allPriceTexts = await this.basketItemPrice.allInnerTexts()
+    //Mapeia e converte para números
+    const justNumbers = allPriceTexts.map((element) => {
+      //Replace é utilizado para remover o cifrão nesse caso, substindo por nada
+      const whitoutDollarSing = element.replace("$", "");
 
-        //Mapeia todos os textos do array
-        const justNumbers = allPriceTexts.map((element) => {
+      return parseInt(whitoutDollarSing, 10);
+    });
 
-            //Remove o cifrão e converte os textos para números inteiros
-            const whitoutDollarSing = element.replace("$", "")
-            return parseInt(whitoutDollarSing, 10)
+    //Localiza o menor valor dentro da lista e remove o produto
+    const smallestPrice = Math.min(...justNumbers);
+    const smallestPriceIdx = justNumbers.indexOf(smallestPrice);
+    const specficRemoveButton = this.basketRemoveButton.nth(smallestPriceIdx);
 
-   
+    await specficRemoveButton.waitFor();
+    await specficRemoveButton.click();
 
-        })
+    //Retirado devido a repetição
+    // await this.basketRemoveButton.nth(smallestPriceIdx).waitFor()
+    // await this.basketRemoveButton.nth(smallestPriceIdx).click()
 
-        //Achar o menor preço na Arrey 
-        const smallestPrice = Math.min(...justNumbers)
+    //Apos remover o produto, verificar se a quantidade de produtos diminiu
+    await expect(this.basketCard).toHaveCount(itemsBeforeRemoval - 1);
+  };
 
-        //Acha o Index do menor preço
-        const smallestPriceIdx = justNumbers.indexOf(smallestPrice)
-
-        //Espera que o botão remover do produto com menor valor e clica nele
-        await this.basketRemoveButton.nth(smallestPriceIdx).waitFor()
-        await this.basketRemoveButton.nth(smallestPriceIdx).click()
-
-
-        await this.page.pause()
-
-
-
-    }
+  continueToCheckout = async () => {
+    await this.continueToCheckoutButton.waitFor();
+    await this.continueToCheckoutButton.click();
+    await this.page.waitForURL(/\/login/, { timeout: 3000 });
+  };
 }
