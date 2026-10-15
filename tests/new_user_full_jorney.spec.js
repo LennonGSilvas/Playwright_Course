@@ -4,6 +4,9 @@ import { Navegation } from "../page-objects/Navegation";
 import { CheckoutPage } from "../page-objects/CheckoutPage";
 import { LoginPage } from "../page-objects/LoginPage";
 import { SingupPage } from "../page-objects/SingupPage";
+import { DeliveryDetailsPage } from "../page-objects/DeliveryDetails";
+import { deliveryDetailsData } from "../data/deliveryDetails";
+import { PaymentPage } from "../page-objects/PaymentPage";
 
 test.only("New user full end-to-end test journey", async ({ page }) => {
   //productPage.visit()
@@ -32,4 +35,12 @@ test.only("New user full end-to-end test journey", async ({ page }) => {
 
   const newUser = new SingupPage(page);
   await newUser.newUser();
+
+  const deliveryDetails = new DeliveryDetailsPage(page);
+  await deliveryDetails.fillDetails(deliveryDetailsData);
+  await deliveryDetails.saveDetails();
+  await deliveryDetails.continueToPayment();
+
+  const payment = new PaymentPage(page);
+  await payment.activeDiscount();
 });

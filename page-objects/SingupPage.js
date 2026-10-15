@@ -14,5 +14,6 @@ export class SingupPage {
     await this.email.fill(email);
     await this.password.fill("teste1");
     await this.singupButton.click();
+    await this.page.waitForURL(/\/delivery/, { timeout: 3000 });
   };
 }
