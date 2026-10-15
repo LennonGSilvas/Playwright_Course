@@ -84,30 +84,3 @@ export class DeliveryDetailsPage {
     await this.page.waitForURL(/\/payment/, { timeout: 3000 });
   };
 }
-
-// import { test, expect } from '@playwright/test';
-
-// test('test', async ({ page }) => {
-//   await page.goto('http://localhost:2221/login?redirect=/delivery-details');
-//   await page.getByRole('textbox', { name: 'E-Mail' }).click();
-//   await page.getByRole('textbox', { name: 'Password' }).click();
-//   await page.getByRole('textbox', { name: 'Password' }).fill('a');
-//   await page.getByRole('textbox', { name: 'E-Mail' }).click();
-//   await page.getByRole('textbox', { name: 'E-Mail' }).fill('a');
-//   await page.getByRole('button', { name: 'Login' }).click();
-//   await page.getByRole('textbox', { name: 'E-Mail' }).click();
-//   await page.getByRole('button', { name: 'Register' }).click();
-//   await page.getByRole('textbox', { name: 'E-Mail' }).click();
-//   await page.getByRole('textbox', { name: 'E-Mail' }).fill('a');
-//   await page.getByRole('textbox', { name: 'Password' }).click();
-//   await page.getByRole('textbox', { name: 'Password' }).fill('a');
-//   await page.getByRole('button', { name: 'Register' }).click();
-//   await page.getByRole('textbox', { name: 'First name' }).click();
-//   await page.getByRole('textbox', { name: 'Last name' }).click();
-//   await page.getByRole('textbox', { name: 'Street' }).click();
-//   await page.getByRole('textbox', { name: 'Post code' }).click();
-//   await page.getByRole('textbox', { name: 'City' }).click();
-//   await page.locator('.flex-1.md\\:pl-4').click();
-//   await page.getByRole('button', { name: 'Save address for next time' }).click();
-//   await page.getByRole('button', { name: 'Continue to payment' }).click();
-// });

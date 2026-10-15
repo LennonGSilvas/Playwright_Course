@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { paymentDetails } from "../data/paymentDetails";
 
 export class PaymentPage {
   constructor(page) {
@@ -17,6 +18,12 @@ export class PaymentPage {
     this.discountActiveMessage = page.locator(
       '[data-qa="discount-active-message"]',
     );
+
+    this.creditCardOwnerInput = page.locator('[data-qa="credit-card-owner"]');
+    this.creditCardNumberInput = page.locator('[data-qa="credit-card-number"]');
+    this.creditCardValidInput = page.locator('[data-qa="valid-until"]');
+    this.creditCardCVCInput = page.locator('[data-qa="credit-card-cvc"]');
+    this.payButton = page.locator('[data-qa="pay-button"]');
   }
 
   activeDiscount = async () => {
@@ -45,5 +52,23 @@ export class PaymentPage {
     const totalValueNumber = parseInt(totalValueOnlyStringNumber, 10);
 
     expect(discountValueNumber).toBeLessThan(totalValueNumber);
+  };
+
+  fillPaymentDetails = async (paymentDetails) => {
+    await this.creditCardOwnerInput.waitFor();
+    await this.creditCardOwnerInput.fill(paymentDetails.cardOwner);
+    await this.creditCardNumberInput.waitFor();
+    await this.creditCardNumberInput.fill(paymentDetails.cardNumber);
+    await this.creditCardValidInput.waitFor();
+    await this.creditCardValidInput.fill(paymentDetails.cardValid);
+    await this.creditCardCVCInput.waitFor();
+    await this.creditCardCVCInput.fill(paymentDetails.cardCVC);
+  };
+
+  completePayment = async () => {
+    await this.payButton.waitFor();
+    await this.payButton.click();
+
+    await this.page.waitForURL(/\/thank-you/, { timeout: 3000 });
   };
 }

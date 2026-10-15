@@ -7,6 +7,7 @@ import { SingupPage } from "../page-objects/SingupPage";
 import { DeliveryDetailsPage } from "../page-objects/DeliveryDetails";
 import { deliveryDetailsData } from "../data/deliveryDetails";
 import { PaymentPage } from "../page-objects/PaymentPage";
+import { paymentDetails } from "../data/paymentDetails";
 
 test.only("New user full end-to-end test journey", async ({ page }) => {
   //productPage.visit()
@@ -43,4 +44,6 @@ test.only("New user full end-to-end test journey", async ({ page }) => {
 
   const payment = new PaymentPage(page);
   await payment.activeDiscount();
+  await payment.fillPaymentDetails(paymentDetails);
+  await payment.completePayment();
 });
