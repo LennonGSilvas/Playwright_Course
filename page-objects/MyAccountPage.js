@@ -2,6 +2,7 @@ export class MyAccountPage {
   constructor(page) {
     this.page = page;
     this.pageHeading = page.getByRole("heading", { name: "My Account" });
+    this.erroMessage = page.locator('[data-qa="error-message"]');
   }
 
   visit = async () => {
@@ -10,5 +11,9 @@ export class MyAccountPage {
 
   waitForPageHeading = async () => {
     await this.pageHeading.waitFor();
+  };
+
+  waitForMessage = async () => {
+    await this.erroMessage.waitFor();
   };
 }
